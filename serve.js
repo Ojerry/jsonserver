@@ -2,6 +2,8 @@ const express = require("express"); //routing stuff
 const mongoose = require("mongoose"); //orm interact with mongo
 const bodyParser = require("body-parser") //parsing data
 const crypto = require("crypto"); //generating string
+const dotenv = require("dotenv")
+dotenv.config()
 
 
 const app = express();
@@ -11,7 +13,7 @@ const connectionParams = {
     useUnifiedTopology: true,
 };
 mongoose.set('strictQuery', false);
-mongoose.connect("mongodb://localhost:27017/jsonserveDB", connectionParams)
+mongoose.connect(process.env.MONGO_URI, connectionParams)
 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -28,7 +30,7 @@ const Jsondata = mongoose.model("Json", jsondataSchema)
 app.post("/postjson",(req, res)=>{
     const randomString = crypto.randomBytes(4).toString('hex');
 
-    const urlEndpoint = `http://localhost:5050/${randomString}`
+    const urlEndpoint = `https://jsonserve.onrender.com/${randomString}`
 
     const newJson = new Jsondata({
         endpoint: randomString,
